@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini GTA 2D</title>
+    <style>
+        body {
+            background-color: #222;
+            text-align: center;
+            color: white;
+        }
+        canvas {
+            background-color: #3a3a3a;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mini GTA - Versión 2D</h1>
+    <p>Usa las teclas de flecha para moverte. Llega al punto verde para completar la misión.</p>
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let player = { x: 50, y: 250, size: 30, speed: 5 };
+        let npc = { x: 600, y: 250, size: 30, speed: 2 };
+        let mission = { x: 750, y: 250, size: 20 };
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowUp") player.y -= player.speed;
+            if (event.key === "ArrowDown") player.y += player.speed;
+            if (event.key === "ArrowLeft") player.x -= player.speed;
+            if (event.key === "ArrowRight") player.x += player.speed;
+        });
+
+        function moveNPC() {
+            if (npc.y < player.y) npc.y += npc.speed;
+            else if (npc.y > player.y) npc.y -= npc.speed;
+        }
+
+        function checkMission() {
+            let dx = player.x - mission.x;
+            let dy = player.y - mission.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 20) {
+                alert("¡Misión completada! Has llegado al punto de destino.");
+                player.x = 50;
+                player.y = 250;
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar personaje
+            ctx.fillStyle = "red";
+            ctx.fillRect(player.x, player.y, player.size, player.size);
+            
+            // Dibujar NPC
+            ctx.fillStyle = "blue";
+            ctx.fillRect(npc.x, npc.y, npc.size, npc.size);
+            
+            // Dibujar misión
+            ctx.fillStyle = "green";
+            ctx.fillRect(mission.x, mission.y, mission.size, mission.size);
+            
+            moveNPC();
+            checkMission();
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
